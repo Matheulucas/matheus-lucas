@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { WeatherModule } from './weather/weather.module';
+import { UsersModule } from './users/users.module'; // exemplo
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),
-  MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/weatherdb'),],
-  controllers: [AppController],
-  providers: [AppService],
-
+  imports: [
+    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/meudb'),
+    UsersModule,
+    WeatherModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule { }
