@@ -1,28 +1,25 @@
-# build stage
-FROM golang:1.21-alpine AS build
+FROM golang:1.20-alpine AS build
 WORKDIR /app
 
-# copie todo o contexto (pode estar vazio no início)
+RUN apk add --no-cache git ca-certificates
+
+ENV GOPROXY=https://proxy.golang.org,direct
+
+COPY go.mod ./
+
+RUN go mod download || true
+
+RUN go get github.com/rabbitmq/amqp091-go@v1.10.0 || true
+
 COPY . .
 
-# se existir main.go, compile o binário
-RUN if [ -f main.go ]; then \
-      GOOS=linux go build -o /app/go-worker main.go; \
-    else \
-      echo "main.go não encontrado — build do binário pulado"; \
-    fi
+RUN CGO_ENABLED=0 GOOS=linux go build -o worker main.go
 
-# runtime stage
+
 FROM alpine:3.18
-WORKDIR /app
-
 RUN apk add --no-cache ca-certificates
-
-# copie todo o diretório /app do estágio build (sempre existirá)
-COPY --from=build /app /app
-
-# copie o entrypoint e torne executável
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+WORKDIR /root/
+COPY --from=build /app/worker .
+ENV RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+ENV BACKEND_URL=http://nest-api:3000/api/weather/logsgs
+CMD ["./worker"]

@@ -1,3 +1,5 @@
-module github.com/yourusername/go-worker
+module github.com/Matheulucas/go-worker
 
-go 1.21
+go 1.20
+
+require github.com/rabbitmq/amqp091-go v1.1.0
