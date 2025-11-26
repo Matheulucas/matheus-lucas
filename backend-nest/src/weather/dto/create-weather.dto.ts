@@ -1,26 +1,35 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsISO8601 } from 'class-validator';
+import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateWeatherDto {
-    @IsISO8601()
-    timestamp: string;
-
-    @IsNumber()
-    temperature: number;
-
-    @IsNumber()
-    humidity: number;
-
-    @IsNumber()
-    wind_speed: number;
-
+    @IsOptional()
     @IsString()
-    condition: string;
+    timestamp?: string; // ISO string
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    temperature?: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    humidity?: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
+    wind_speed?: number;
 
     @IsOptional()
     @IsString()
-    location?: string;
+    condition?: string;
+
+    // raw/source are optional, no validation deep here
+    @IsOptional()
+    raw?: any;
 
     @IsOptional()
-    @IsNumber()
-    probability_of_rain?: number;
+    @IsString()
+    source?: string;
 }

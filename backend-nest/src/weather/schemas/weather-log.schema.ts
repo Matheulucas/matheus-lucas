@@ -9,19 +9,26 @@ export class WeatherLog {
     timestamp: Date;
 
     @Prop()
-    temperature_c: number;
+    temperature: number;
 
     @Prop()
-    humidity_pct: number;
+    humidity: number;
 
     @Prop()
-    wind_kph: number;
+    wind_speed: number;
 
     @Prop()
     condition: string;
 
     @Prop({ type: Object })
     raw: any;
+
+    @Prop()
+    source?: string;
+
+    // Declarações para satisfazer o TypeScript (Mongoose adiciona esses campos automaticamente)
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export const WeatherLogSchema = SchemaFactory.createForClass(WeatherLog);
